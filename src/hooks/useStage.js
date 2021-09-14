@@ -40,8 +40,6 @@ export const useStage = (player, resetPlayer) => {
         return sweepRows(newStage);
       }
 
-      console.log(newStage);
-
       return newStage;
     };
 
