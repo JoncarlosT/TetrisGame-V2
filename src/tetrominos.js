@@ -58,7 +58,7 @@ export const TETROMINOS = {
   },
 };
 
-export const radomTetromino = () => {
+export const randomTetromino = () => {
   const tetrominos = "IJLOSTZ";
 
   const randomTetromino =
