@@ -104,13 +104,21 @@ const Tetris = () => {
 
           <StartButton callBack={startGame} />
 
-          <div>
-            <Display text={"Spacebar: Restart"} />
-            <Display text={"🠕: Rotate"} />
-            <Display text={"➞: Move Right"} />
-            <Display text={"🠔: Move Left"} />
-            <Display text={"🠗: Move Down"} />
-          </div>
+          {gameOver ? (
+            <div>
+              <Display text="High Score 1" />
+              <Display text="High Score 2" />
+              <Display text="High Score 3" />
+            </div>
+          ) : (
+            <div>
+              <Display text={"Spacebar: Restart"} />
+              <Display text={"🠕: Rotate"} />
+              <Display text={"➞: Move Right"} />
+              <Display text={"🠔: Move Left"} />
+              <Display text={"🠗: Move Down"} />
+            </div>
+          )}
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
