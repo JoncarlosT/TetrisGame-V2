@@ -20,5 +20,5 @@ const StyledDisplay = styled.div`
   color: ${(props) => (props.gameOver ? "red" : "#999")};
   background: #000;
   font-family: Nunito;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
 `;
