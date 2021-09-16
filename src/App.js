@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Tetris from "./components/Game/Tetris";
-import BG from "./Assets/pexels-felix-mittermeier-1329917.jpg";
+import BG from "./Assets/wp2675347-tetris-wallpaper.jpg";
 
 const App = () => {
   return (
