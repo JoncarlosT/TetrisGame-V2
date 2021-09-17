@@ -28,15 +28,19 @@ const Tetris = () => {
     useGameStatus(rowsCleared);
 
   const getHighScores = async () => {
-    const q = query(
-      collection(db, "highScores"),
-      orderBy("Score", "desc"),
-      limit(3)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setHighScores(doc.data());
-    });
+    try {
+      const q = query(
+        collection(db, "highScores"),
+        orderBy("Score", "desc"),
+        limit(3)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setHighScores(doc.data());
+      });
+    } catch (e) {
+      console.log("Error getting cached document:", e);
+    }
   };
 
   const movePlayer = (dir) => {
