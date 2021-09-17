@@ -8,7 +8,14 @@ import { usePlayer } from "../../hooks/usePlayer";
 import { useInterval } from "../../hooks/useInterval";
 import { useGameStatus } from "../../hooks/useGameStatus";
 import { createStage, checkCollision } from "../../utils/gameHelper";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import db from "../../firebase";
 
 const Tetris = () => {
@@ -21,13 +28,16 @@ const Tetris = () => {
     useGameStatus(rowsCleared);
 
   const getHighScores = async () => {
-    const querySnapshot = await getDocs(collection(db, "highScores"));
+    const q = query(
+      collection(db, "highScores"),
+      orderBy("Score", "desc"),
+      limit(3)
+    );
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.data());
+      setHighScores(doc.data());
     });
   };
-
-  getHighScores();
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
