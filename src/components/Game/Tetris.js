@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Stage from "../Stage/Stage";
 import Display from "./Display";
@@ -19,7 +19,7 @@ import {
 import db from "../../firebase";
 
 const Tetris = () => {
-  const [highScores, setHighScores] = useState();
+  const [highScores, setHighScores] = useState([]);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
@@ -36,12 +36,16 @@ const Tetris = () => {
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        setHighScores(doc.data());
+        setHighScores((prevArray) => [...prevArray, doc.data()]);
       });
     } catch (e) {
       console.log("Error getting cached document:", e);
     }
   };
+
+  useEffect(() => {
+    getHighScores();
+  }, []);
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -115,11 +119,22 @@ const Tetris = () => {
       onKeyUp={keyUp}
     >
       <StyledTetris>
+        <HighScoresSide>
+          <Display text={`High Scores`} />
+
+          {highScores.map((item, idx) => {
+            return <Display key={idx} text={`${item.Name}:  ${item.Score}`} />;
+          })}
+        </HighScoresSide>
+
         <Stage stage={stage} />
 
         <aside>
           {gameOver ? (
-            <Display gameOver={gameOver} text="Game Over" />
+            <div>
+              <Display text={`Score: ${score}`} />
+              <Display gameOver={gameOver} text="Game Over" />
+            </div>
           ) : (
             <div>
               <Display text={`Score: ${score}`} />
@@ -131,11 +146,7 @@ const Tetris = () => {
           <StartButton callBack={startGame} />
 
           {gameOver ? (
-            <div>
-              <Display text="High Score 1" />
-              <Display text="High Score 2" />
-              <Display text="High Score 3" />
-            </div>
+            <div></div>
           ) : (
             <div>
               <Display text={"Spacebar: Restart"} />
@@ -163,11 +174,18 @@ const StyledTetris = styled.div`
   align-items: flex-start;
   padding: 40px;
   margin: 0 auto;
-  max-width: 900px;
+  max-width: 1000px;
   aside {
     width: 100%;
     max-width: 200px;
     display: block;
     padding: 0 20px;
   }
+`;
+
+const HighScoresSide = styled.div`
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  padding: 0 20px;
 `;
