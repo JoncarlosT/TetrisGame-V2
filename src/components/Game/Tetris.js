@@ -8,17 +8,11 @@ import { usePlayer } from "../../hooks/usePlayer";
 import { useInterval } from "../../hooks/useInterval";
 import { useGameStatus } from "../../hooks/useGameStatus";
 import { createStage, checkCollision } from "../../utils/gameHelper";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { collection, query, getDocs, orderBy, limit } from "firebase/firestore";
 import db from "../../firebase";
 
 const Tetris = () => {
+  const [newHighScore, setNewHighScore] = useState(true);
   const [highScores, setHighScores] = useState([]);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
@@ -29,6 +23,7 @@ const Tetris = () => {
 
   const getHighScores = async () => {
     try {
+      setHighScores([]);
       const q = query(
         collection(db, "highScores"),
         orderBy("Score", "desc"),
@@ -45,9 +40,15 @@ const Tetris = () => {
 
   useEffect(() => {
     getHighScores();
-  }, []);
+  }, [gameOver]);
 
-  console.log(highScores);
+  const checkUserScore = (useScore) => {
+    if (highScores.some((el) => el.Score < useScore)) {
+      setNewHighScore(true);
+    }
+  };
+
+  console.log(newHighScore);
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -135,6 +136,9 @@ const Tetris = () => {
           {gameOver ? (
             <div>
               <Display text={`Score: ${score}`} />
+              <Display text={`Rows: ${rows}`} />
+              <Display text={`Level: ${level}`} />
+
               <Display gameOver={gameOver} text="Game Over" />
             </div>
           ) : (
@@ -147,6 +151,46 @@ const Tetris = () => {
 
           <StartButton callBack={startGame} />
 
+          {/* {gameOver ? (
+            <div>
+              <Display text={`New High Score`} />
+              <form action="">
+                <Input type="text" placeholder="Enter Name" required />
+                <UploadButton onClick={setNewHighScore(false)}>
+                  Add New Score
+                </UploadButton>
+              </form>
+            </div>
+          ) : (
+              div
+          )} */}
+
+          {/* {gameOver ? (
+            <div>
+              <Display text={`Score: ${score}`} />
+
+              {highScores.some((el) => el.Score < score) ? (
+                <div>
+                  <Display text={`New High Score`} />
+                  <form action="">
+                    <Input type="text" placeholder="Enter Name" required />
+                    <UploadButton>Add New Score</UploadButton>
+                  </form>
+                </div>
+              ) : (
+                <Display gameOver={gameOver} text="Game Over" />
+              )}
+            </div>
+          ) : (
+            <div>
+              <Display text={`Score: ${score}`} />
+              <Display text={`Rows: ${rows}`} />
+              <Display text={`Level: ${level}`} />
+
+              <StartButton callBack={startGame} />
+            </div>
+          )}
+
           {gameOver ? (
             <div></div>
           ) : (
@@ -157,7 +201,7 @@ const Tetris = () => {
               <Display text={"🠔: Move Left"} />
               <Display text={"🠗: Move Down"} />
             </div>
-          )}
+          )} */}
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
@@ -190,4 +234,36 @@ const HighScoresSide = styled.div`
   max-width: 200px;
   display: block;
   padding: 0 20px;
+`;
+
+const Input = styled.input`
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  margin: 0 0 20px 0;
+  padding: 20px;
+  border: 4px solid #333;
+  min-height: 30px;
+  width: 100%;
+  border-radius: 20px;
+  color: ${(props) => (props.gameOver ? "red" : "#999")};
+  background: #000;
+  font-family: Nunito;
+  font-size: 1.2rem;
+`;
+
+const UploadButton = styled.button`
+  box-sizing: border-box;
+  margin: 0 0 20px 0;
+  padding: 20px;
+  min-height: 30px;
+  width: 100%;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  background: #333;
+  font-family: Nunito;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
 `;
