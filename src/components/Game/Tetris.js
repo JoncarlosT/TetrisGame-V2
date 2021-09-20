@@ -8,11 +8,18 @@ import { usePlayer } from "../../hooks/usePlayer";
 import { useInterval } from "../../hooks/useInterval";
 import { useGameStatus } from "../../hooks/useGameStatus";
 import { createStage, checkCollision } from "../../utils/gameHelper";
-import { collection, query, getDocs, orderBy, limit } from "firebase/firestore";
+import {
+  collection,
+  query,
+  getDocs,
+  orderBy,
+  limit,
+  addDoc,
+} from "firebase/firestore";
 import db from "../../firebase";
 
 const Tetris = () => {
-  const [newHighScore, setNewHighScore] = useState(true);
+  const [userName, setUserName] = useState("");
   const [highScores, setHighScores] = useState([]);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
@@ -42,13 +49,12 @@ const Tetris = () => {
     getHighScores();
   }, [gameOver]);
 
-  const checkUserScore = (useScore) => {
-    if (highScores.some((el) => el.Score < useScore)) {
-      setNewHighScore(true);
-    }
+  const uploadNewScore = async () => {
+    await addDoc(collection(db, "highScores"), {
+      Name: userName,
+      Score: score,
+    });
   };
-
-  console.log(newHighScore);
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -139,44 +145,8 @@ const Tetris = () => {
               <Display text={`Rows: ${rows}`} />
               <Display text={`Level: ${level}`} />
 
-              <Display gameOver={gameOver} text="Game Over" />
-            </div>
-          ) : (
-            <div>
-              <Display text={`Score: ${score}`} />
-              <Display text={`Rows: ${rows}`} />
-              <Display text={`Level: ${level}`} />
-            </div>
-          )}
-
-          <StartButton callBack={startGame} />
-
-          {/* {gameOver ? (
-            <div>
-              <Display text={`New High Score`} />
-              <form action="">
-                <Input type="text" placeholder="Enter Name" required />
-                <UploadButton onClick={setNewHighScore(false)}>
-                  Add New Score
-                </UploadButton>
-              </form>
-            </div>
-          ) : (
-              div
-          )} */}
-
-          {/* {gameOver ? (
-            <div>
-              <Display text={`Score: ${score}`} />
-
               {highScores.some((el) => el.Score < score) ? (
-                <div>
-                  <Display text={`New High Score`} />
-                  <form action="">
-                    <Input type="text" placeholder="Enter Name" required />
-                    <UploadButton>Add New Score</UploadButton>
-                  </form>
-                </div>
+                <Display text={"New High Score"} />
               ) : (
                 <Display gameOver={gameOver} text="Game Over" />
               )}
@@ -186,22 +156,29 @@ const Tetris = () => {
               <Display text={`Score: ${score}`} />
               <Display text={`Rows: ${rows}`} />
               <Display text={`Level: ${level}`} />
-
-              <StartButton callBack={startGame} />
             </div>
           )}
 
-          {gameOver ? (
-            <div></div>
+          {gameOver & highScores.some((el) => el.Score < score) ? (
+            <div>
+              <form action="" onSubmit={() => uploadNewScore()}>
+                <Input
+                  type="text"
+                  placeholder="Enter Name"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  required
+                />
+                <UploadButton onClick={() => uploadNewScore()}>
+                  Add New Score
+                </UploadButton>
+              </form>
+            </div>
           ) : (
             <div>
-              <Display text={"Spacebar: Restart"} />
-              <Display text={"🠕: Rotate"} />
-              <Display text={"➞: Move Right"} />
-              <Display text={"🠔: Move Left"} />
-              <Display text={"🠗: Move Down"} />
+              <StartButton callBack={startGame} />
             </div>
-          )} */}
+          )}
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
