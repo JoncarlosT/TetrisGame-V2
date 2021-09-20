@@ -177,6 +177,18 @@ const Tetris = () => {
               <StartButton callBack={startGame} />
             </div>
           )}
+
+          {gameOver ? (
+            <span></span>
+          ) : (
+            <div>
+              <Display text={"Spacebar: Restart"} />
+              <Display text={"↑: Rotate"} />
+              <Display text={"↓: Down"} />
+              <Display text={"→: Right"} />
+              <Display text={"←: Left"} />
+            </div>
+          )}
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
