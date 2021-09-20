@@ -28,6 +28,13 @@ const Tetris = () => {
   const [score, setScore, rows, setRows, level, setLevel] =
     useGameStatus(rowsCleared);
 
+  const uploadNewScore = async () => {
+    await addDoc(collection(db, "highScores"), {
+      Name: userName,
+      Score: score,
+    });
+  };
+
   const getHighScores = async () => {
     try {
       setHighScores([]);
@@ -48,13 +55,6 @@ const Tetris = () => {
   useEffect(() => {
     getHighScores();
   }, [gameOver]);
-
-  const uploadNewScore = async () => {
-    await addDoc(collection(db, "highScores"), {
-      Name: userName,
-      Score: score,
-    });
-  };
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
