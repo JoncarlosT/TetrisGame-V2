@@ -161,7 +161,7 @@ const Tetris = () => {
 
           {gameOver & highScores.some((el) => el.Score < score) ? (
             <div>
-              <form action="" onSubmit={() => uploadNewScore()}>
+              <form onSubmit={() => uploadNewScore()}>
                 <Input
                   type="text"
                   placeholder="Enter Name"
@@ -169,9 +169,7 @@ const Tetris = () => {
                   onChange={(e) => setUserName(e.target.value)}
                   required
                 />
-                <UploadButton onClick={() => uploadNewScore()}>
-                  Add New Score
-                </UploadButton>
+                <UploadButton type="submit">Add New Score</UploadButton>
               </form>
             </div>
           ) : (
