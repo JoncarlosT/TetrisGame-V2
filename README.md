@@ -57,3 +57,5 @@ const getHighScores = async () => {
 ```
 
 # Credit
+
+All right of tetris belong to Tetris Holding LLC
