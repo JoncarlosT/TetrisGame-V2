@@ -6,6 +6,8 @@ TetrisGame-V2 is a recreation of the classic Tetris game released in 1984, as we
 
 Website live [here](https://tetrisgame-v2.firebaseapp.com/)
 
+![alt text](https://github.com/JoncarlosT/TetrisGame-V2/blob/main/public/github/tetris-github.gif)
+
 # TetrisGame-V2's Architecture and Technologies:
 
 - This app was solely built using React.js, Firebase, and styled-components
