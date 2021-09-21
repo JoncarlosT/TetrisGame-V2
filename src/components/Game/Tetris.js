@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Stage from "../Stage/Stage";
 import Display from "./Display";
 import StartButton from "../Buttons/StartButton";
+
 import { useStage } from "../../hooks/useStage";
 import { usePlayer } from "../../hooks/usePlayer";
 import { useInterval } from "../../hooks/useInterval";
@@ -135,7 +136,6 @@ const Tetris = () => {
             return <Display key={idx} text={`${item.Name}:  ${item.Score}`} />;
           })}
         </HighScoresSide>
-
         <Stage stage={stage} />
 
         <aside>
@@ -161,7 +161,7 @@ const Tetris = () => {
 
           {gameOver & highScores.some((el) => el.Score < score) ? (
             <div>
-              <form onSubmit={() => uploadNewScore()}>
+              <form>
                 <Input
                   type="text"
                   placeholder="Enter Name"
@@ -169,14 +169,23 @@ const Tetris = () => {
                   onChange={(e) => setUserName(e.target.value)}
                   required
                 />
-                <UploadButton type="submit">Add New Score</UploadButton>
+                <UploadButton
+                  onClick={() => {
+                    if (userName !== "") {
+                      uploadNewScore();
+                    }
+                  }}
+                  type="submit"
+                >
+                  Add New Score
+                </UploadButton>
               </form>
             </div>
           ) : (
-            <div>
-              <StartButton callBack={startGame} />
-            </div>
+            <div></div>
           )}
+
+          <StartButton callBack={startGame} />
 
           {gameOver ? (
             <span></span>
